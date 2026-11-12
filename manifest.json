@@ -1,0 +1,16 @@
+{
+    "name": "Danielle Rose Photography",
+    "short_name": "Danielle Rose",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#fbd5e1",
+    "theme_color": "#b9577e",
+    "icons": [
+        {
+            "src": "./app-icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
