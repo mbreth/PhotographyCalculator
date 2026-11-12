@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pay Calculator</title>
+    <link rel="preconnect" href="https://font.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #fbd5e1;
+            color: #702b45;
+            margin: 0;
+            padding: 30px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .camera-icon {
+            font-size: 45px;
+            color: #9b4966;
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 64px;
+            font-weight: 400;
+            margin: 0;
+            color: #8b3453;
+        }
+
+        .subtitle {
+            letter-spacing: 8px;
+            font-size: 14px;
+            margin-top: 0;
+        }
+
+        .income-card {
+            background: #fff8fa;
+            padding: 25px;
+            border-radius: 22px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            font-size: 26px;
+            border: 2px solid #e78cb0;
+            border-radius: 14px;
+            background: white;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #a94770;
+        }
+
+        .result {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 16px;
+            margin-bottom: 12px;
+            background: #fff8fa;
+            border-radius: 18px;
+            box-shadow: 0 3px 10px rgba(120, 50, 75, 0.05);
+        }
+
+        .result span:last-child {
+            font-weight: 700;
+            color: #922f57;
+            white-space: nowrap;
+        }
+
+        .total-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 20px;
+            margin-top: 25px;
+            background: #b9577e;
+            color: white;
+            border-radius: 18px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 52px;
+            }
+
+            .result {
+                font-size: 14px;
+            }
+
+            .total-bar {
+                font-size: 20px;
+            }
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="camera-icon">
+            <svg width="80" height="65" viewBox="0 0 80 65"
+                fill="none" stroke="currentColor"
+                stroke-width="3" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M8 17 H22 L28 9 H51 L57 17 H72
+                        Q76 17 76 22 V55
+                        Q76 59 72 59 H8
+                        Q4 59 4 55 V22
+                        Q4 17 8 17 Z"/>
+                <circle cx="40" cy="38" r="15"/>
+                <path d="M33 36 C33 30 40 32 40 36
+                        C40 32 47 30 47 36
+                        C47 42 40 46 40 46
+                        C40 46 33 42 33 36 Z"/>       
+            </svg>
+        </div>
+
+        <h1>Danielle Rose Photography</h1>
+        <p class=""subtitle">CALCULATOR</p>
+    </header>
+
+    <div class="income-card">
+        <label for="income">Pay Total ($)</label>
+        <input
+            type="number"
+            id="income"
+            placeholder="Enter Amount"
+            min="0"
+            step="0.01"
+            inputmode="decimal"
+        >
+    </div>
+
+    <div class="result">
+        <span>Taxes (30%)</span>
+        <span id="taxes">$0.00</span>
+    </div>
+
+    <div class="result">
+        <span>Business Expenses (20%)</span>
+        <span id="expenses">$0.00</span>
+    </div>
+
+    <div class="result">
+        <span>Personal Pay (35%)</span>
+        <span id="pay">$0.00</span>
+    </div>
+
+    <div class="result">
+        <span>Business Savings (10%)</span>
+        <span id="businesssavings">$0.00</span>
+    </div>
+
+    <div class="result">
+        <span>Personal Savings (5%)</span>
+        <span id="personalsavings">$0.00</span>
+    </div>
+
+    <div class="total-bar">
+        <span>Total</span>
+        <span id="total">$0.00</span>
+    </div>
+
+    <script>
+        const incomeInput = document.getElementById("income");
+
+        const categories = [
+            ["taxes", 30],
+            ["expenses", 20],
+            ["pay", 35],
+            ["businesssavings", 10],
+            ["personalsavings", 5]
+        ];
+
+        const formatMoney = cents =>
+            (cents / 100).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD"
+            });
+
+        incomeInput.addEventListener("input", function () {
+            const income = Math.max(0, Number(incomeInput.value) || 0);
+            const totalCents = Math.round(income * 100);
+
+            let allocated = 0;
+
+            categories.forEach(([id, percent], index) => {
+                const cents = index === categories.length - 1
+                    ? totalCents - allocated
+                    : Math.round(totalCents * percent / 100);
+                allocated += cents;
+                document.getElementById(id).textContent = formatMoney(cents);
+            });
+
+            document.getElementById("total").textContent = 
+            formatMoney(totalCents);
+            
+        });
+
+        
+
+    </script>
+
+</body>
+</html>
