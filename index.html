@@ -20,7 +20,7 @@
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: #fbd5e1;
+            background: black;
             color: #702b45;
             margin: 0;
             padding: 30px 20px;
@@ -228,6 +228,33 @@
             formatMoney(totalCents);
 
         });
+
+        async function checkforupdates() {
+            try {
+                const response = await fetch(
+                    "./version.json?t=" + Date.now(),
+                    { cache: "no-store"}
+                );
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const currentversion = localStorage.getItem("appVersion");
+
+                if (currentversion && currentversion !== data.version) {
+                    localStorage.setItem("appVersion", data.version);
+                    window.location.replace(
+                        window.location.pathname + "?v=" + encodeURIComponent(data.version)
+                    );
+                } else {
+                    localStorage.setItem("appVersion", data.version);
+                }
+            } catch (error) {
+                console.log("Update check failed: ", error);
+            }
+        }
+
+        checkforupdates();
 
         
 
